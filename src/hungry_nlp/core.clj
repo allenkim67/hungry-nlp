@@ -27,5 +27,7 @@
 
 (defn analyze [id message]
   (let [intent (analyze-intent message)
-        entities (analyze-entities id message)]
-    {:intent intent, :entities entities}))
+        entities (analyze-entities id message)
+        response {:intent intent, :entities entities}]
+    (do (println response)
+        response)))
