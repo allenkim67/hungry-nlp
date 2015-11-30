@@ -13,13 +13,13 @@
     (:best-category (categorizer message))))
 
 (defn spellcheck [id entity-type match]
-  (let [entities-json (s/deserialize (slurp (str "resources/json/" id "-entities.json")) :json)]
+  (let [entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)]
     (->> (entity-type entities-json)
          (sort-by (partial fuzzy/jaro-winkler match))
          last)))
 
 (defn analyze-entities [id message]
-  (let [name-finder-model (train/train-name-finder (str "resources/training/" id "-entities.train"))
+  (let [name-finder-model (train/train-name-finder (str "resources/training/user/" id "-entities.train"))
         name-finder (nlp/make-name-finder name-finder-model)
         found-entities (name-finder (tokenize message))
         entity-types (->> found-entities meta :spans (map (comp keyword :type)))]

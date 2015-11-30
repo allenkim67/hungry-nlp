@@ -16,7 +16,7 @@
   (let [shared-entities (s/deserialize (slurp "resources/json/entities.json") :json)
         entities-json (merge shared-entities json)]
     (do
-      (spit (str "resources/json/" id "-entities.json") (s/serialize entities-json :json))
+      (spit (str "resources/json/user/" id "-entities.json") (s/serialize entities-json :json))
       (trainer/train-entities id))))
 
 (defroutes app-routes

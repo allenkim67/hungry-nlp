@@ -10,3 +10,5 @@ pom.xml.asc
 /.nrepl-port
 *.iml
 /.idea
+/resources/json/user
+/resources/training/user

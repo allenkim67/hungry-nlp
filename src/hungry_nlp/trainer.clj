@@ -48,10 +48,10 @@
 
 (defn train-entities [id]
   (let [intents-json (s/deserialize (slurp "resources/json/intents.json") :json)
-        entities-json (s/deserialize (slurp (str "resources/json/" id "-entities.json")) :json)
+        entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)
         wrapped-entities (wrap-spans entities-json)
         intents (interpolate-intents wrapped-entities intents-json)]
-    (spit (str "resources/training/" id "-entities.train") (->> intents
+    (spit (str "resources/training/user/" id "-entities.train") (->> intents
                                                                 vals
                                                                 flatten
                                                                 (clojure.string/join "\n")))))
