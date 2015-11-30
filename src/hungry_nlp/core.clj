@@ -12,20 +12,20 @@
         categorizer (nlp/make-document-categorizer intent-model)]
     (:best-category (categorizer message))))
 
-(defn spellcheck [entity-type match]
-  (let [entities-json (s/deserialize (slurp "resources/json/entities.json") :json)]
+(defn spellcheck [id entity-type match]
+  (let [entities-json (s/deserialize (slurp (str "resources/json/" id "-entities.json")) :json)]
     (->> (entity-type entities-json)
          (sort-by (partial fuzzy/jaro-winkler match))
          last)))
 
-(defn analyze-entities [message]
-  (let [name-finder-model (train/train-name-finder "resources/training/entities.train")
+(defn analyze-entities [id message]
+  (let [name-finder-model (train/train-name-finder (str "resources/training/" id "-entities.train"))
         name-finder (nlp/make-name-finder name-finder-model)
         found-entities (name-finder (tokenize message))
         entity-types (->> found-entities meta :spans (map (comp keyword :type)))]
-    (into {} (map vector entity-types (map spellcheck entity-types found-entities)))))
+    (into {} (map vector entity-types (map (partial spellcheck id) entity-types found-entities)))))
 
-(defn analyze [message]
+(defn analyze [id message]
   (let [intent (analyze-intent message)
-        entities (analyze-entities message)]
+        entities (analyze-entities id message)]
     {:intent intent, :entities entities}))

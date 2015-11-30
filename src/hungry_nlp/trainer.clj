@@ -46,12 +46,12 @@
 (defn wrap-spans [entities-json]
   (util/map-values (fn [v k] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
 
-(defn train-entities []
+(defn train-entities [id]
   (let [intents-json (s/deserialize (slurp "resources/json/intents.json") :json)
-        entities-json (s/deserialize (slurp "resources/json/entities.json") :json)
+        entities-json (s/deserialize (slurp (str "resources/json/" id "-entities.json")) :json)
         wrapped-entities (wrap-spans entities-json)
         intents (interpolate-intents wrapped-entities intents-json)]
-    (spit "resources/training/entities.train" (->> intents
-                                                   vals
-                                                   flatten
-                                                   (clojure.string/join "\n")))))
+    (spit (str "resources/training/" id "-entities.train") (->> intents
+                                                                vals
+                                                                flatten
+                                                                (clojure.string/join "\n")))))

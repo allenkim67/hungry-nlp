@@ -1,63 +1,117 @@
 greet hi
 greet hello
 showMenu show menu
-order i want gum
-order i want cake
-order i want corn
-order give me gum
-order give me cake
-order give me corn
-order i want one gum
-order i want one cake
-order i want one corn
-order i want two gum
-order i want two cake
-order i want two corn
-order i want three gum
-order i want three cake
-order i want three corn
-order i want four gum
-order i want four cake
-order i want four corn
-order i want five gum
-order i want five cake
-order i want five corn
-order i want six gum
-order i want six cake
-order i want six corn
-order i want seven gum
-order i want seven cake
-order i want seven corn
-order i want eight gum
-order i want eight cake
-order i want eight corn
-order i want nine gum
-order i want nine cake
-order i want nine corn
-order give me one gum
-order give me one cake
-order give me one corn
-order give me two gum
-order give me two cake
-order give me two corn
-order give me three gum
-order give me three cake
-order give me three corn
-order give me four gum
-order give me four cake
-order give me four corn
-order give me five gum
-order give me five cake
-order give me five corn
-order give me six gum
-order give me six cake
-order give me six corn
-order give me seven gum
-order give me seven cake
-order give me seven corn
-order give me eight gum
-order give me eight cake
-order give me eight corn
-order give me nine gum
-order give me nine cake
-order give me nine corn
+order i want kelp
+order i want seaweed
+order i want underwater grass
+order give me kelp
+order give me seaweed
+order give me underwater grass
+order i want 1 kelp
+order i want 1 seaweed
+order i want 1 underwater grass
+order i want 2 kelp
+order i want 2 seaweed
+order i want 2 underwater grass
+order i want 3 kelp
+order i want 3 seaweed
+order i want 3 underwater grass
+order i want 4 kelp
+order i want 4 seaweed
+order i want 4 underwater grass
+order i want 5 kelp
+order i want 5 seaweed
+order i want 5 underwater grass
+order i want 6 kelp
+order i want 6 seaweed
+order i want 6 underwater grass
+order i want 7 kelp
+order i want 7 seaweed
+order i want 7 underwater grass
+order i want 8 kelp
+order i want 8 seaweed
+order i want 8 underwater grass
+order i want 9 kelp
+order i want 9 seaweed
+order i want 9 underwater grass
+order i want one kelp
+order i want one seaweed
+order i want one underwater grass
+order i want two kelp
+order i want two seaweed
+order i want two underwater grass
+order i want three kelp
+order i want three seaweed
+order i want three underwater grass
+order i want four kelp
+order i want four seaweed
+order i want four underwater grass
+order i want five kelp
+order i want five seaweed
+order i want five underwater grass
+order i want six kelp
+order i want six seaweed
+order i want six underwater grass
+order i want seven kelp
+order i want seven seaweed
+order i want seven underwater grass
+order i want eight kelp
+order i want eight seaweed
+order i want eight underwater grass
+order i want nine kelp
+order i want nine seaweed
+order i want nine underwater grass
+order give me 1 kelp
+order give me 1 seaweed
+order give me 1 underwater grass
+order give me 2 kelp
+order give me 2 seaweed
+order give me 2 underwater grass
+order give me 3 kelp
+order give me 3 seaweed
+order give me 3 underwater grass
+order give me 4 kelp
+order give me 4 seaweed
+order give me 4 underwater grass
+order give me 5 kelp
+order give me 5 seaweed
+order give me 5 underwater grass
+order give me 6 kelp
+order give me 6 seaweed
+order give me 6 underwater grass
+order give me 7 kelp
+order give me 7 seaweed
+order give me 7 underwater grass
+order give me 8 kelp
+order give me 8 seaweed
+order give me 8 underwater grass
+order give me 9 kelp
+order give me 9 seaweed
+order give me 9 underwater grass
+order give me one kelp
+order give me one seaweed
+order give me one underwater grass
+order give me two kelp
+order give me two seaweed
+order give me two underwater grass
+order give me three kelp
+order give me three seaweed
+order give me three underwater grass
+order give me four kelp
+order give me four seaweed
+order give me four underwater grass
+order give me five kelp
+order give me five seaweed
+order give me five underwater grass
+order give me six kelp
+order give me six seaweed
+order give me six underwater grass
+order give me seven kelp
+order give me seven seaweed
+order give me seven underwater grass
+order give me eight kelp
+order give me eight seaweed
+order give me eight underwater grass
+order give me nine kelp
+order give me nine seaweed
+order give me nine underwater grass
