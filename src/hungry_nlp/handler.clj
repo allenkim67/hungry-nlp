@@ -4,8 +4,15 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [clojurewerkz.serialism.core :as s]
+            [clojure-watch.core :refer [start-watch]]
             [hungry-nlp.core :as nlp]
             [hungry-nlp.trainer :as trainer]))
+
+(start-watch [{:path        "resources/json/shared"
+               :event-types [:modify]
+               :bootstrap   (fn [path] (println "Starting to watch " path))
+               :callback    (fn [event path] (do (println event path)
+                                                 (trainer/train-intents)))}])
 
 (defn json-response [data & [status]]
   {:status  (or status 200)
@@ -13,7 +20,7 @@
    :body    data})
 
 (defn write-entities-json [id json]
-  (let [shared-entities (s/deserialize (slurp "resources/json/entities.json") :json)
+  (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
         entities-json (merge shared-entities json)]
     (do
       (spit (str "resources/json/user/" id "-entities.json") (s/serialize entities-json :json))

@@ -38,16 +38,16 @@
           (apply concat (pairs intents))))
 
 (defn train-intents []
-  (let [intents-json (s/deserialize (slurp "resources/json/intents.json") :json)
-        entities-json (s/deserialize (slurp "resources/json/entities.json") :json)
+  (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
+        entities-json (s/deserialize (slurp "resources/json/shared/entities.json") :json)
         intents (interpolate-intents entities-json intents-json)]
-    (spit "resources/training/intents.train" (stringify-intents intents))))
+    (spit "resources/training/shared/intents.train" (stringify-intents intents))))
 
 (defn wrap-spans [entities-json]
   (util/map-values (fn [v k] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
 
 (defn train-entities [id]
-  (let [intents-json (s/deserialize (slurp "resources/json/intents.json") :json)
+  (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
         entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)
         wrapped-entities (wrap-spans entities-json)
         intents (interpolate-intents wrapped-entities intents-json)]

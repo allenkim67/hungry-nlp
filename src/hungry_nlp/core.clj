@@ -8,7 +8,7 @@
 (def tokenize (nlp/make-tokenizer "resources/en-token.bin"))
 
 (defn analyze-intent [message]
-  (let [intent-model (train/train-document-categorization "resources/training/intents.train")
+  (let [intent-model (train/train-document-categorization "resources/training/shared/intents.train")
         categorizer (nlp/make-document-categorizer intent-model)]
     (:best-category (categorizer message))))
 

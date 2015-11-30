@@ -1,7 +1,7 @@
 {
   "greet": ["hi", "hello"],
   "showMenu": ["show menu"],
-  "confirm": ["yes", "yeah", "ok", "yup", "alright"],
+  "confirm": ["yes", "yeah", "yah", "ya", "yup", "alright", "ok", "okay"],
   "deny": ["no", "nope", "nah"],
   "clearOrder": [
     "clear my orders",
