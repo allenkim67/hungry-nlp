@@ -1,0 +1,10 @@
+{
+  "greet": ["hi", "hello"],
+  "showMenu": ["show menu"],
+  "order": [
+    "i want {{{food}}}",
+    "give me {{{food}}}",
+    "i want {{{number}}} {{{food}}}",
+    "give me {{{number}}} {{{food}}}"
+  ]
+}
