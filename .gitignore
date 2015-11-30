@@ -11,4 +11,4 @@ pom.xml.asc
 *.iml
 /.idea
 /resources/json/user
-/resources/training/user
+/resources/training
