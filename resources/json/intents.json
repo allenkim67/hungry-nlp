@@ -1,6 +1,17 @@
 {
   "greet": ["hi", "hello"],
   "showMenu": ["show menu"],
+  "confirm": ["yes", "yeah", "ok", "yup", "alright"],
+  "deny": ["no", "nope", "nah"],
+  "clearOrder": [
+    "clear my orders",
+    "i want to clear my orders",
+    "clear orders",
+    "start over",
+    "i want to start over",
+    "let me start over",
+    "can I start over"
+  ],
   "order": [
     "i want {{{food}}}",
     "give me {{{food}}}",
