@@ -17,5 +17,14 @@
     "give me {{{food}}}",
     "i want {{{number}}} {{{food}}}",
     "give me {{{number}}} {{{food}}}"
+  ],
+  "showCurrentOrders": [
+    "current orders",
+    "show my current orders",
+    "show me my current orders",
+    "what are my current orders",
+    "show current order",
+    "what have I ordered so far",
+    "how much is that so far"
   ]
 }

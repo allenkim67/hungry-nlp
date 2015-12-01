@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+            [clojure.java.io :as io]
             [clojurewerkz.serialism.core :as s]
             [clojure-watch.core :refer [start-watch]]
             [hungry-nlp.core :as nlp]
@@ -10,7 +11,8 @@
 
 (start-watch [{:path        "resources/json/shared"
                :event-types [:modify]
-               :bootstrap   (fn [path] (println "Starting to watch " path))
+               :bootstrap   (fn [path] (do (trainer/train-intents)
+                                           (println "Starting to watch " path)))
                :callback    (fn [event path] (do (println event path)
                                                  (trainer/train-intents)))}])
 
@@ -21,9 +23,11 @@
 
 (defn write-entities-json [id json]
   (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
+        entities-filepath (str "resources/json/user/" id "-entities.json")
         entities-json (merge shared-entities json)]
     (do
-      (spit (str "resources/json/user/" id "-entities.json") (s/serialize entities-json :json))
+      (io/make-parents entities-filepath)
+      (spit entities-filepath (s/serialize entities-json :json))
       (trainer/train-entities id))))
 
 (defroutes app-routes

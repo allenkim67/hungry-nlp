@@ -1,5 +1,6 @@
 (ns hungry-nlp.trainer
-  (:require [clojurewerkz.serialism.core :as s]
+  (:require [clojure.java.io :as io]
+            [clojurewerkz.serialism.core :as s]
             [stencil.core :as stencil]
             [clojure.math.combinatorics :as combinatorics]
             [hungry-nlp.util :as util]))
@@ -40,8 +41,10 @@
 (defn train-intents []
   (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
         entities-json (s/deserialize (slurp "resources/json/shared/entities.json") :json)
-        intents (interpolate-intents entities-json intents-json)]
-    (spit "resources/training/shared/intents.train" (stringify-intents intents))))
+        intents (interpolate-intents entities-json intents-json)
+        intents-train-filepath "resources/training/shared/intents.train"]
+    (do (io/make-parents intents-train-filepath)
+        (spit intents-train-filepath (stringify-intents intents)))))
 
 (defn wrap-spans [entities-json]
   (util/map-values (fn [v k] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
@@ -50,8 +53,10 @@
   (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
         entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)
         wrapped-entities (wrap-spans entities-json)
-        intents (interpolate-intents wrapped-entities intents-json)]
-    (spit (str "resources/training/user/" id "-entities.train") (->> intents
-                                                                vals
-                                                                flatten
-                                                                (clojure.string/join "\n")))))
+        intents (interpolate-intents wrapped-entities intents-json)
+        entities-train-filepath (str "resources/training/user/" id "-entities.train")]
+    (do (io/make-parents entities-train-filepath)
+        (spit entities-train-filepath (->> intents
+                                           vals
+                                           flatten
+                                           (clojure.string/join "\n"))))))
