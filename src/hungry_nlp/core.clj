@@ -1,5 +1,6 @@
 (ns hungry-nlp.core
-  (:require [opennlp.nlp :as nlp]
+  (:require [clojure.java.io :as io]
+            [opennlp.nlp :as nlp]
             [opennlp.tools.train :as train]
             [clojurewerkz.serialism.core :as s]
             [clj-fuzzy.metrics :as fuzzy])
@@ -18,12 +19,18 @@
          (sort-by (partial fuzzy/jaro-winkler match))
          last)))
 
-(defn analyze-entities [id message]
-  (let [name-finder-model (train/train-name-finder (str "resources/training/user/" id "-entities.train"))
-        name-finder (nlp/make-name-finder name-finder-model)
-        found-entities (name-finder (tokenize message))
-        entity-types (->> found-entities meta :spans (map (comp keyword :type)))]
-    (into {} (map vector entity-types (map (partial spellcheck id) entity-types found-entities)))))
+(defn analyze-entities
+  ([message] (analyze-entities nil message))
+  ([id message]
+    (let [entities-path-from-id (str "resources/training/user/" id "-entities.train")
+          entites-train-filepath (if (and (.exists (io/file entities-path-from-id)) (id))
+                                   entities-path-from-id
+                                   "resources/training/shared/entities.train")
+          name-finder-model (train/train-name-finder entites-train-filepath)
+          name-finder (nlp/make-name-finder name-finder-model)
+          found-entities (name-finder (tokenize message))
+          entity-types (->> found-entities meta :spans (map (comp keyword :type)))]
+      (into {} (map vector entity-types (map (partial spellcheck id) entity-types found-entities))))))
 
 (defn analyze [id message]
   (let [intent (analyze-intent message)

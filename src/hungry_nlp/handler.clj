@@ -12,9 +12,11 @@
 (start-watch [{:path        "resources/json/shared"
                :event-types [:modify]
                :bootstrap   (fn [path] (do (trainer/train-intents)
+                                           (trainer/train-entities)
                                            (println "Starting to watch " path)))
                :callback    (fn [event path] (do (println event path)
-                                                 (trainer/train-intents)))}])
+                                                 (trainer/train-intents)
+                                                 (trainer/train-entities)))}])
 
 (defn json-response [data & [status]]
   {:status  (or status 200)

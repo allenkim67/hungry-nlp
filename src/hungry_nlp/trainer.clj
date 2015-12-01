@@ -49,14 +49,16 @@
 (defn wrap-spans [entities-json]
   (util/map-values (fn [v k] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
 
-(defn train-entities [id]
-  (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
-        entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)
-        wrapped-entities (wrap-spans entities-json)
-        intents (interpolate-intents wrapped-entities intents-json)
-        entities-train-filepath (str "resources/training/user/" id "-entities.train")]
-    (do (io/make-parents entities-train-filepath)
-        (spit entities-train-filepath (->> intents
-                                           vals
-                                           flatten
-                                           (clojure.string/join "\n"))))))
+(defn train-entities
+  ([] (train-entities nil))
+  ([id] (let [entities-json-filepath (if id (str "resources/json/user/" id "-entities.json") "resources/json/shared/entities.json")
+              entities-train-filepath (if id (str "resources/train/user/" id "-entities.train") "resources/training/shared/entities.train")
+              intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
+              entities-json (s/deserialize (slurp entities-json-filepath) :json)
+              wrapped-entities (wrap-spans entities-json)
+              intents (interpolate-intents wrapped-entities intents-json)]
+          (do (io/make-parents entities-train-filepath)
+              (spit entities-train-filepath (->> intents
+                                                 vals
+                                                 flatten
+                                                 (clojure.string/join "\n")))))))
