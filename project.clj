@@ -12,7 +12,8 @@
                  [clj-fuzzy "0.3.1"]
                  [instaparse "1.4.0"]
                  [ring/ring-json "0.4.0"]
-                 [clojure-watch "LATEST"]]
+                 [clojure-watch "LATEST"]
+                 [clj-time "0.11.0"]]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler hungry-nlp.handler/app}
   :profiles
