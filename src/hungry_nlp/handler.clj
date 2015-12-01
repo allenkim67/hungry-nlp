@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+            [clojure.java.io :as io]
             [clojurewerkz.serialism.core :as s]
             [clojure-watch.core :refer [start-watch]]
             [hungry-nlp.core :as nlp]
@@ -20,11 +21,12 @@
    :body    data})
 
 (defn write-entities-json [id json]
-  (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
-        entities-json (merge shared-entities json)]
-    (do
-      (spit (str "resources/json/user/" id "-entities.json") (s/serialize entities-json :json))
-      (trainer/train-entities id))))
+  (with-open [user-entities-file (io/writer (str "resources/json/user/" id "-entities.json"))]
+    (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
+          entities-json (merge shared-entities json)]
+      (do
+        (.write user-entities-file (s/serialize entities-json :json))
+        (trainer/train-entities id)))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
