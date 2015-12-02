@@ -40,5 +40,11 @@
     "is this working",
     "i dont understand",
     "how does this work"
+  ],
+  "getLocation": [
+    "location",
+    "located",
+    "where is your restaurant",
+    "where are you"
   ]
 }
