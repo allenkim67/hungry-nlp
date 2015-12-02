@@ -52,7 +52,7 @@
 (defn train-entities
   ([] (train-entities nil))
   ([id] (let [entities-json-filepath (if id (str "resources/json/user/" id "-entities.json") "resources/json/shared/entities.json")
-              entities-train-filepath (if id (str "resources/train/user/" id "-entities.train") "resources/training/shared/entities.train")
+              entities-train-filepath (if id (str "resources/training/user/" id "-entities.train") "resources/training/shared/entities.train")
               intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
               entities-json (s/deserialize (slurp entities-json-filepath) :json)
               wrapped-entities (wrap-spans entities-json)

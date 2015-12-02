@@ -14,7 +14,11 @@
     (:best-category (categorizer message))))
 
 (defn spellcheck [id entity-type match]
-  (let [entities-json (s/deserialize (slurp (str "resources/json/user/" id "-entities.json")) :json)]
+  (let [entities-filepath-with-id (str "resources/json/user/" id "-entities.json")
+        entities-json-filepath (if (.exists (io/file entities-filepath-with-id))
+                                 entities-filepath-with-id
+                                 "resources/json/shared/entities.json")
+        entities-json (s/deserialize (slurp entities-json-filepath) :json)]
     (->> (entity-type entities-json)
          (sort-by (partial fuzzy/jaro-winkler match))
          last)))
@@ -23,7 +27,7 @@
   ([message] (analyze-entities nil message))
   ([id message]
     (let [entities-path-from-id (str "resources/training/user/" id "-entities.train")
-          entites-train-filepath (if (and (.exists (io/file entities-path-from-id)) (id))
+          entites-train-filepath (if (and (.exists (io/file entities-path-from-id)) id)
                                    entities-path-from-id
                                    "resources/training/shared/entities.train")
           name-finder-model (train/train-name-finder entites-train-filepath)
