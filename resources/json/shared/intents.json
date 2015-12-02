@@ -1,8 +1,8 @@
 {
-  "greet": ["hi", "hello"],
-  "showMenu": ["show menu"],
+  "greet": ["hi", "hello", "hey", "howdy", "heya", "yo", "whats up", "wassup", "hows it going", "how goes it", "bonjour", "buenas noches", "goood day", "buenos dias", "good day", "hi-ya", "shalom", "whats up", "how goes it", "howdy-do"],
+  "showMenu": ["show menu", "menu", "what do you have", "whats there to order", "what food do you guys have", "whats there to eat", "what are some good meals", "what kind of grubbery do you have", "what kind of food parcels do you have", "what nourishments are available", "what kind of food do you have", "what food is available", "i want some snacks", "what kind of snacks do you have"],
   "confirm": ["yes", "yeah", "yah", "ya", "yup", "alright", "ok", "okay"],
-  "deny": ["no", "nope", "nah"],
+  "deny": ["no", "nope", "nah", "no thank you", "i dont want that", "no thanks", "no thx", "no ty", "nop"],
   "clearOrder": [
     "clear my orders",
     "i want to clear my orders",
@@ -10,13 +10,26 @@
     "start over",
     "i want to start over",
     "let me start over",
-    "can I start over"
+    "can I start over",
+    "i want to begin again",
+    "make a fresh start",
+    "start from scratch",
+    "lets start from scratch",
+    "i want to start from scratch",
+    "i want to make a fresh start",
+    "lets make a fresh start",
+    "lets go back to the drawing board",
+    "lets start from the beginning",
+    "i want to recreate the menu",
+    "lets recreate the menu",
+    "i want to cancel my order"
   ],
   "order": [
     "i want {{{food}}}",
     "give me {{{food}}}",
     "i want {{{number}}} {{{food}}}",
-    "give me {{{number}}} {{{food}}}"
+    "give me {{{number}}} {{{food}}}",
+    "{{{number}}} {{{food}}}"
   ],
   "showCurrentOrders": [
     "current orders",
@@ -26,5 +39,15 @@
     "show current order",
     "what have I ordered so far",
     "how much is that so far"
+  ],
+  "moreInfo": [
+    "help",
+    "what can you do",
+    "what do i do now",
+    "what can i do",
+    "how do you work",
+    "is this working",
+    "i dont understand",
+    "how does this work"
   ]
 }
