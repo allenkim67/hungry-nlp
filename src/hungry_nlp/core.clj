@@ -14,7 +14,7 @@
     (:best-category (categorizer message))))
 
 (defn spellcheck [id entity-type match]
-  (let [entities-filepath-with-id (str "resources/json/user/" id "-entities.json")
+  (let [entities-filepath-with-id (str "resources/json/user_entities/" id "-entities.json")
         entities-json-filepath (if (.exists (io/file entities-filepath-with-id))
                                  entities-filepath-with-id
                                  "resources/json/shared/entities.json")
@@ -26,7 +26,7 @@
 (defn analyze-entities
   ([message] (analyze-entities nil message))
   ([id message]
-    (let [entities-path-from-id (str "resources/training/user/" id "-entities.train")
+    (let [entities-path-from-id (str "resources/training/user_entities/" id "-entities.train")
           entites-train-filepath (if (and (.exists (io/file entities-path-from-id)) id)
                                    entities-path-from-id
                                    "resources/training/shared/entities.train")

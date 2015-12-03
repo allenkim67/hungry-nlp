@@ -26,10 +26,18 @@
   ],
   "order": [
     "i want {{{food}}}",
+    "i want to add {{{food}}}",
+    "i want to add {{{number}}} {{{food}}}",
     "give me {{{food}}}",
     "i want {{{number}}} {{{food}}}",
     "give me {{{number}}} {{{food}}}",
     "{{{number}}} {{{food}}}"
+  ],
+  "removeOrder": [
+    "remove {{{food}}}",
+    "remove {{{number}}} {{{food}}}",
+    "i want to remove {{{food}}}",
+    "i want to remove {{{number}}} {{{food}}}"
   ],
   "showCurrentOrders": [
     "current orders",

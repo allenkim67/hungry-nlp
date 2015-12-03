@@ -26,7 +26,7 @@
 
 (defn write-entities-json [id json]
   (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
-        entities-filepath (str "resources/json/user/" id "-entities.json")
+        entities-filepath (str "resources/json/user_entities/" id "-entities.json")
         entities-json (merge shared-entities json)]
     (do
       (io/make-parents entities-filepath)
