@@ -10,7 +10,7 @@
   (reduce-kv (fn [m k v] (assoc m k (f v))) {} old-map))
 
 (defn map-kv [f old-map]
-  (reduce-kv (fn [m k v] (assoc m k (f v k))) {} old-map))
+  (reduce-kv (fn [m k v] (assoc m k (f k v))) {} old-map))
 
 (defn find-first [f coll]
   (first (filter f coll)))

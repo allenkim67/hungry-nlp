@@ -82,12 +82,23 @@
         categorizer (nlp/make-document-categorizer intent-model)]
     (:best-category (categorizer message))))
 
+(defn canonical-name [entity-groups type match]
+  (let [entities (get entity-groups type)
+        is-match (fn [entity] (if (map? entity)
+                                (or (= (:id entity) match)
+                                    (some? (some #{match} (:synonyms entity))))
+                                (= match entity)))]
+    (->> entities
+         (util/find-first is-match)
+         (#(if (map? %) (:id %) %)))))
+
 (defn analyze-entities [id message]
   (let [entities (get-entities-json id)
         is-match (util/fcomp (partial fuzzy/match message) pos?)]
     (->> (merge-synonyms entities)
          (util/map-vals (partial util/find-first is-match))
-         util/compact-map)))
+         util/compact-map
+         (util/map-kv (partial canonical-name entities)))))
 
 (defn analyze [id message]
   (let [intent (analyze-intent id message)
