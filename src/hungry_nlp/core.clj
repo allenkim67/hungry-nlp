@@ -9,23 +9,20 @@
             [hungry-nlp.util :as util])
   (:gen-class))
 
+(def intent-threshold 0.8)
+
 (defn kv-pairs [m]
   (->> m
        (into [])
-       (map (fn [[k vs ]] (map #(vector k %) vs)))))
+       (map (fn [[k vs]] (map #(vector k %) vs)))))
 
 (defn merge-synonyms [entities]
   (let [flattener (fn [entity] (if (map? entity) (conj (:synonyms entity) (:id entity)) [entity]))]
     (util/map-vals (partial mapcat flattener) entities)))
 
 (def stringify-intents
-  (partial reduce
-           (fn [string intent-pair] (str string
-                                         (name (first intent-pair))
-                                         " "
-                                         (second intent-pair)
-                                         "\n"))
-           ""))
+  (let [join-intents (fn [s [category intent]] (str s category " " intent))]
+    (partial reduce join-intents "")))
 
 (def get-template-vars
   (comp
@@ -77,10 +74,20 @@
        format-intents
        (write-intents-file id)))
 
+(defn update-user-data [id entities]
+  (let [filepath (str "resources/json/user/" id "-entities.json")]
+    (do
+      (io/make-parents filepath)
+      (spit filepath (s/serialize entities :json))
+      (train-intents id))))
+
 (defn analyze-intent [id message]
   (let [intent-model (train/train-document-categorization (str "resources/training/" id "-intents.train"))
-        categorizer (nlp/make-document-categorizer intent-model)]
-    (:best-category (categorizer message))))
+        categorizer (nlp/make-document-categorizer intent-model)
+        result (categorizer message)
+        match-percent (->> result meta :probabilities vals (apply max))]
+    (do (println match-percent)
+        (if (> match-percent intent-threshold) (:best-category result) nil))))
 
 (defn canonical-name [entity-groups type match]
   (let [entities (get entity-groups type)
@@ -103,6 +110,6 @@
 (defn analyze [id message]
   (let [intent (analyze-intent id message)
         entities (analyze-entities id message)
-        response {:intent intent, :entities entities}]
+        response (if intent {:intent intent, :entities entities} {:error "no match"})]
     (do (println response)
         response)))

@@ -27,10 +27,14 @@
   "order": [
     "{{{food}}}",
     "{{{number}}} {{{food}}}",
+    "i want a {{{food}}}",
+    "i want the {{{food}}}",
     "i want {{{food}}}",
     "i want to add {{{food}}}",
     "i want to add {{{number}}} {{{food}}}",
     "give me {{{food}}}",
+    "give me a {{{food}}}",
+    "give me the {{{food}}}",
     "i want {{{number}}} {{{food}}}",
     "give me {{{number}}} {{{food}}}",
     "{{{number}}} {{{food}}}"
