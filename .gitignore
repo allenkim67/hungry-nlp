@@ -12,3 +12,4 @@ pom.xml.asc
 /.idea
 /resources/json/user
 /resources/training
+.DS_Store

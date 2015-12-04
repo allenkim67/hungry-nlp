@@ -6,37 +6,24 @@
             [clojure.java.io :as io]
             [clojurewerkz.serialism.core :as s]
             [clojure-watch.core :refer [start-watch]]
-            [hungry-nlp.core :as nlp]
-            [hungry-nlp.trainer :as trainer]))
-
-(if-not (= (System/getenv "CLJ_ENV") "production")
-  (start-watch [{:path        "resources/json/shared"
-                 :event-types [:modify]
-                 :bootstrap   (fn [path] (do (trainer/train-intents)
-                                             (trainer/train-entities)
-                                             (println "Starting to watch " path)))
-                 :callback    (fn [event path] (do (println event path)
-                                                   (trainer/train-intents)
-                                                   (trainer/train-entities)))}]))
+            [hungry-nlp.core :as nlp]))
 
 (defn json-response [data & [status]]
   {:status  (or status 200)
    :headers {"Content-Type" "application/json"}
    :body    data})
 
-(defn write-entities-json [id json]
-  (let [shared-entities (s/deserialize (slurp "resources/json/shared/entities.json") :json)
-        entities-filepath (str "resources/json/user_entities/" id "-entities.json")
-        entities-json (merge shared-entities json)]
+(defn write-training [id entities]
+  (let [filepath (str "resources/json/user/" id "-entities.json")]
     (do
-      (io/make-parents entities-filepath)
-      (spit entities-filepath (s/serialize entities-json :json))
-      (trainer/train-entities id))))
+      (io/make-parents filepath)
+      (spit filepath (s/serialize entities :json))
+      (nlp/train-intents id))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (GET "/query/:id" req (json-response (nlp/analyze (get-in req [:params :id]) (get-in req [:params :message]))))
-  (POST "/userEntities/:id" req (write-entities-json (get-in req [:params :id]) (:body req)) {:status 200})
+  (POST "/userEntities/:id" req (write-training (get-in req [:params :id]) (:body req)) {:status 200})
   (route/not-found "Not Found"))
 
 (def app

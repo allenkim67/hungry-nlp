@@ -13,7 +13,9 @@
                  [instaparse "1.4.0"]
                  [ring/ring-json "0.4.0"]
                  [clojure-watch "LATEST"]
-                 [clj-time "0.11.0"]]
+                 [clj-time "0.11.0"]
+                 [org.clojure/tools.trace "0.7.9"]]
+  :java-source-paths ["src/main/java"]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler hungry-nlp.handler/app}
   :profiles

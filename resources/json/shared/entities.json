@@ -1,6 +1,13 @@
 {
   "number": [
-    "1", "2", "3", "4", "5", "6", "7", "8", "9",
-    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+    {"id": "1", "synonyms": ["one"]},
+    {"id": "2", "synonyms": ["two"]},
+    {"id": "3", "synonyms": ["three"]},
+    {"id": "4", "synonyms": ["four"]},
+    {"id": "5", "synonyms": ["five"]},
+    {"id": "6", "synonyms": ["six"]},
+    {"id": "7", "synonyms": ["seven"]},
+    {"id": "8", "synonyms": ["eight"]},
+    {"id": "9", "synonyms": ["nine"]}
   ]
 }

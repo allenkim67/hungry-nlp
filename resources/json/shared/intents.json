@@ -25,6 +25,8 @@
     "i want to cancel my order"
   ],
   "order": [
+    "{{{food}}}",
+    "{{{number}}} {{{food}}}",
     "i want {{{food}}}",
     "i want to add {{{food}}}",
     "i want to add {{{number}}} {{{food}}}",
