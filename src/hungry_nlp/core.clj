@@ -1,43 +1,43 @@
 (ns hungry-nlp.core
-  (:require [clojure.java.io :as io]
-            [opennlp.nlp :as nlp]
+  (:require [opennlp.nlp :as nlp]
             [opennlp.tools.train :as train]
-            [clojurewerkz.serialism.core :as s]
-            [clj-fuzzy.metrics :as fuzzy])
+            [clj-fuzzy.metrics :as fuzzy]
+            [hungry-nlp.util :as util]
+            [hungry-nlp.file-ops :as fop])
+  (:use [clojure.tools.trace])
   (:gen-class))
 
 (def tokenize (nlp/make-tokenizer "resources/en-token.bin"))
 
-(defn analyze-intent [message]
-  (let [intent-model (train/train-document-categorization "resources/training/shared/intents.train")
+(defn analyze-intent [id message]
+  (let [intent-model (train/train-document-categorization (fop/intents-training-filepath id))
         categorizer (nlp/make-document-categorizer intent-model)]
     (:best-category (categorizer message))))
 
-(defn spellcheck [id entity-type match]
-  (let [entities-filepath-with-id (str "resources/json/user_entities/" id "-entities.json")
-        entities-json-filepath (if (.exists (io/file entities-filepath-with-id))
-                                 entities-filepath-with-id
-                                 "resources/json/shared/entities.json")
-        entities-json (s/deserialize (slurp entities-json-filepath) :json)]
-    (->> (entity-type entities-json)
-         (sort-by (partial fuzzy/jaro-winkler match))
-         last)))
+(defn spellcheck [entities entity-type match]
+  (->> (get entities entity-type)
+       (map :synonyms)
+       (reduce concat)
+       (sort-by (partial fuzzy/jaro-winkler match))
+       last))
 
-(defn analyze-entities
-  ([message] (analyze-entities nil message))
-  ([id message]
-    (let [entities-path-from-id (str "resources/training/user_entities/" id "-entities.train")
-          entites-train-filepath (if (and (.exists (io/file entities-path-from-id)) id)
-                                   entities-path-from-id
-                                   "resources/training/shared/entities.train")
-          name-finder-model (train/train-name-finder entites-train-filepath)
-          name-finder (nlp/make-name-finder name-finder-model)
-          found-entities (name-finder (tokenize message))
-          entity-types (->> found-entities meta :spans (map (comp keyword :type)))]
-      (into {} (map vector entity-types (map (partial spellcheck id) entity-types found-entities))))))
+(defn canonical-name [entities type match]
+  (let [entities (get entities type)
+        is-match #(some? (some #{match} (:synonyms %)))]
+    (->> entities (util/find-first is-match) :id)))
+
+(defn analyze-entities [id message]
+  (let [name-finder-model (train/train-name-finder (fop/entities-training-filepath id))
+        name-finder (nlp/make-name-finder name-finder-model)
+        matched-entities (->> message tokenize name-finder)
+        matched-types (->> matched-entities meta :spans (map (util/fcomp :type keyword)))
+        entities (fop/get-merged-entities id)]
+    (->> (zipmap matched-types matched-entities)
+         (util/map-kv (partial spellcheck entities))
+         (util/map-kv (partial canonical-name entities)))))
 
 (defn analyze [id message]
-  (let [intent (analyze-intent message)
+  (let [intent (analyze-intent id message)
         entities (analyze-entities id message)
         response {:intent intent, :entities entities}]
     (do (println response)

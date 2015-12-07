@@ -1,64 +1,58 @@
 (ns hungry-nlp.trainer
-  (:require [clojure.java.io :as io]
-            [clojurewerkz.serialism.core :as s]
-            [stencil.core :as stencil]
+  (:require [stencil.core :as stencil]
             [clojure.math.combinatorics :as combinatorics]
-            [hungry-nlp.util :as util]))
+            [hungry-nlp.util :as util]
+            [hungry-nlp.file-ops :as fop])
+  (:use [clojure.tools.trace]))
 
-(def pairs
-  (partial reduce-kv
-           (fn [a k v] (conj a (map #(vector k %) v)))
-           []))
+(def stringify-intents
+  (let [join-intents (fn [s [category intent]] (str s (name category) " " intent "\n"))]
+    (partial reduce join-intents "")))
 
-(defn get-entity-combos [entity-groups names]
-  (->> names
+(def format-intents
+  (util/fcomp
+    (util/fcomp util/kv-pairs util/flatten-one)
+    stringify-intents))
+
+(defn get-entity-combos [entities entity-names]
+  (->> entity-names
        (map keyword)
-       (select-keys entity-groups)
-       pairs
+       (select-keys entities)
+       util/kv-pairs
        (apply combinatorics/cartesian-product)
        (map flatten)
        (map #(apply hash-map %))))
 
-(defn get-template-vars [template-string]
-  (->> template-string
-       (re-seq #"\{\{\{(.*?)\}\}\}")
-       (map last)))
-
-(defn interpolate-intent [entities intent]
-  (->> intent
-       get-template-vars
-       (get-entity-combos entities)
-       (map #(stencil/render-string intent %))))
+(def get-template-vars
+  (util/fcomp (partial re-seq #"\{\{\{(.*?)\}\}\}")
+              (partial map last)))
 
 (defn interpolate-intents [entities intents]
-  (util/map-values (fn [v k] (mapcat (partial interpolate-intent entities) v)) intents))
-
-(defn stringify-intents [intents]
-  (reduce (fn [s [k v]] (str s (name k) " " v "\n"))
-          ""
-          (apply concat (pairs intents))))
-
-(defn train-intents []
-  (let [intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
-        entities-json (s/deserialize (slurp "resources/json/shared/entities.json") :json)
-        intents (interpolate-intents entities-json intents-json)
-        intents-train-filepath "resources/training/shared/intents.train"]
-    (do (io/make-parents intents-train-filepath)
-        (spit intents-train-filepath (stringify-intents intents)))))
+  (let [interpolate (fn [intent] (->> intent
+                                      get-template-vars
+                                      (get-entity-combos entities)
+                                      (map #(stencil/render-string intent %))))]
+    (util/map-vals-mapcat interpolate intents)))
 
 (defn wrap-spans [entities-json]
-  (util/map-values (fn [v k] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
+  (util/map-kv (fn [k v] (map #(str "<START:" (name k) "> " % " <END>") v)) entities-json))
 
-(defn train-entities
-  ([] (train-entities nil))
-  ([id] (let [entities-json-filepath (if id (str "resources/json/user_entities/" id "-entities.json") "resources/json/shared/entities.json")
-              entities-train-filepath (if id (str "resources/training/user_entities/" id "-entities.train") "resources/training/shared/entities.train")
-              intents-json (s/deserialize (slurp "resources/json/shared/intents.json") :json)
-              entities-json (s/deserialize (slurp entities-json-filepath) :json)
-              wrapped-entities (wrap-spans entities-json)
-              intents (interpolate-intents wrapped-entities intents-json)]
-          (do (io/make-parents entities-train-filepath)
-              (spit entities-train-filepath (->> intents
-                                                 vals
-                                                 flatten
-                                                 (clojure.string/join "\n")))))))
+(defn train-intents [id]
+  (->> (fop/get-shared-intents)
+       (interpolate-intents (->> (fop/get-merged-entities id)
+                                 (util/map-vals-mapcat :synonyms)))
+       format-intents
+       (fop/write-intents-training id)))
+
+(defn train-entities [id]
+  (->> (fop/get-shared-intents)
+       (interpolate-intents (->> (fop/get-merged-entities id)
+                                 (util/map-vals-mapcat :synonyms)
+                                 wrap-spans))
+       ((util/fcomp vals flatten (partial clojure.string/join "\n")))
+       (fop/write-entities-training id)))
+
+(defn update-user-data [id entities]
+  (do (fop/write-entities-training id entities)
+      (train-entities id)
+      (train-intents id)))
