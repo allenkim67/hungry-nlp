@@ -53,6 +53,6 @@
        (fop/write-entities-training id)))
 
 (defn update-user-data [id entities]
-  (do (fop/write-entities-training id entities)
+  (do (fop/write-user-entities id entities)
       (train-entities id)
       (train-intents id)))

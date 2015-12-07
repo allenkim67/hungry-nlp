@@ -6,8 +6,10 @@
 (defn read-json [path] (s/deserialize (slurp path) :json))
 
 (defn get-shared-entities [] (read-json "resources/json/shared/entities.json"))
-(defn get-user-entities [id] (read-json (str "resources/json/user/" id "-entities.json")))
 (defn get-shared-intents [] (read-json "resources/json/shared/intents.json"))
+
+(defn get-user-entities [id] (read-json (str "resources/json/user/" id "-entities.json")))
+(defn write-user-entities [id content] (util/make-spit (str "resources/json/user/" id "-entities.json") (s/serialize content :json)))
 
 (defn entities-training-filepath [id] (str "resources/training/" id "-entities.train"))
 (defn intents-training-filepath [id] (str "resources/training/" id "-intents.train"))
