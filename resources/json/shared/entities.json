@@ -1,13 +1,13 @@
 {
   "number": [
-    {"id": "1", "synonyms": ["one"]},
-    {"id": "2", "synonyms": ["two"]},
-    {"id": "3", "synonyms": ["three"]},
-    {"id": "4", "synonyms": ["four"]},
-    {"id": "5", "synonyms": ["five"]},
-    {"id": "6", "synonyms": ["six"]},
-    {"id": "7", "synonyms": ["seven"]},
-    {"id": "8", "synonyms": ["eight"]},
-    {"id": "9", "synonyms": ["nine"]}
+    {"id": "1", "synonyms": ["1", "one"]},
+    {"id": "2", "synonyms": ["2", "two"]},
+    {"id": "3", "synonyms": ["3", "three"]},
+    {"id": "4", "synonyms": ["4", "four"]},
+    {"id": "5", "synonyms": ["5", "five"]},
+    {"id": "6", "synonyms": ["6", "six"]},
+    {"id": "7", "synonyms": ["7", "seven"]},
+    {"id": "8", "synonyms": ["8", "eight"]},
+    {"id": "9", "synonyms": ["9", "nine"]}
   ]
 }

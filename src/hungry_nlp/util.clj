@@ -1,4 +1,5 @@
-(ns hungry-nlp.util)
+(ns hungry-nlp.util
+  (:require [clojure.java.io :as io]))
 
 (defn fcomp [& fs]
   (apply comp (reverse fs)))
@@ -15,5 +16,14 @@
 (defn find-first [f coll]
   (first (filter f coll)))
 
-(def compact-map
-  (partial into {} (remove (fcomp second nil?))))
+(defn kv-pairs [m]
+  (->> m
+       (into [])
+       (map (fn [[k vs]] (map #(vector k %) vs)))))
+
+(defn map-vals-mapcat [f m]
+  (map-vals #(mapcat f %) m))
+
+(defn make-spit [path content]
+  (do (io/make-parents path)
+      (spit path content)))
