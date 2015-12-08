@@ -25,25 +25,15 @@
     "i want to cancel my order"
   ],
   "order": [
-    "{{{food}}}",
-    "{{{number}}} {{{food}}}",
-    "i want a {{{food}}}",
-    "i want the {{{food}}}",
-    "i want {{{food}}}",
-    "i want to add {{{food}}}",
-    "i want to add {{{number}}} {{{food}}}",
-    "give me {{{food}}}",
-    "give me a {{{food}}}",
-    "give me the {{{food}}}",
-    "i want {{{number}}} {{{food}}}",
-    "give me {{{number}}} {{{food}}}",
-    "{{{number}}} {{{food}}}"
+    "{{{order}}}",
+    "i want {{{order}}}",
+    "i want {{{order}}} and {{{order}}}",
+    "i want to add {{{order}}}",
+    "give me {{{order}}}"
   ],
   "removeOrder": [
-    "remove {{{food}}}",
-    "remove {{{number}}} {{{food}}}",
-    "i want to remove {{{food}}}",
-    "i want to remove {{{number}}} {{{food}}}"
+    "remove {{{order}}}",
+    "i want to remove {{{order}}}"
   ],
   "showCurrentOrders": [
     "current orders",

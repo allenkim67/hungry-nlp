@@ -16,8 +16,6 @@
 
 (defn spellcheck [entities entity-type match]
   (->> (get entities entity-type)
-       (map :synonyms)
-       (reduce concat)
        (sort-by (partial fuzzy/jaro-winkler match))
        last))
 
@@ -26,15 +24,27 @@
         is-match #(some? (some #{match} (:synonyms %)))]
     (->> entities (util/find-first is-match) :id)))
 
-(defn analyze-entities [id message]
-  (let [name-finder-model (train/train-name-finder (fop/entities-training-filepath id))
+(defn analyze-compound-entities [id message]
+  (let [name-finder-model (train/train-name-finder (fop/compound-entities-training-filepath id))
+        name-finder (nlp/make-name-finder name-finder-model)
+        matched-entities (->> message tokenize name-finder)
+        matched-types (->> matched-entities meta :spans (map (util/fcomp :type keyword)))]
+    (->> (util/zipmap-concat matched-types matched-entities))))
+
+(defn analyze-base-entities [id message]
+  (let [name-finder-model (train/train-name-finder (fop/base-entities-training-filepath id))
         name-finder (nlp/make-name-finder name-finder-model)
         matched-entities (->> message tokenize name-finder)
         matched-types (->> matched-entities meta :spans (map (util/fcomp :type keyword)))
         entities (fop/get-merged-entities id)]
     (->> (zipmap matched-types matched-entities)
-         (util/map-kv (partial spellcheck entities))
-         (util/map-kv (partial canonical-name entities)))))
+         (util/map-kv (partial spellcheck (->> entities util/merge-vals fop/merge-synonyms)))
+         (util/map-kv (partial canonical-name (:baseEntities entities))))))
+
+(defn analyze-entities [id message]
+  (let [compound-entities (analyze-compound-entities id message)]
+    (->> compound-entities
+         (util/map-vals-map (partial analyze-base-entities id)))))
 
 (defn analyze [id message]
   (let [intent (analyze-intent id message)

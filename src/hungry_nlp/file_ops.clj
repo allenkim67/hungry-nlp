@@ -11,12 +11,17 @@
 (defn get-user-entities [id] (read-json (str "resources/json/user/" id "_entities.json")))
 (defn write-user-entities [id content] (util/make-spit (str "resources/json/user/" id "_entities.json") (s/serialize content :json)))
 
-(defn entities-training-filepath [id] (str "resources/training/" id "_entities.train"))
+(defn compound-entities-training-filepath [id] (str "resources/training/" id "_compound_entities.train"))
+(defn base-entities-training-filepath [id] (str "resources/training/" id "_base_entities.train"))
 (defn intents-training-filepath [id] (str "resources/training/" id "_intents.train"))
 
-(defn write-entities-training [id content] (util/make-spit (str "resources/training/" id "_entities.train") content))
+(defn write-compound-entities-training [id content] (util/make-spit (str "resources/training/" id "_compound_entities.train") content))
+(defn write-base-entities-training [id content] (util/make-spit (str "resources/training/" id "_base_entities.train") content))
 (defn write-intents-training [id content] (util/make-spit (str "resources/training/" id "_intents.train") content))
 
 (defn get-merged-entities [id]
-  (merge (get-shared-entities)
-         (get-user-entities id)))
+  (let [shared-entities (get-shared-entities)]
+    (assoc shared-entities :baseEntities (merge (:baseEntities shared-entities)
+                                                 (get-user-entities id)))))
+(def merge-synonyms
+  (partial util/map-vals-mapcat #(if (map? %) (:synonyms %) [%])))
