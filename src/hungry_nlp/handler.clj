@@ -5,7 +5,8 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [hungry-nlp.core :as nlp]
             [clojurewerkz.serialism.core :as s]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io])
+  (:use [clojure.tools.trace]))
 
 (defn json-response [data & [status]]
   {:status  (or status 200)
@@ -14,7 +15,10 @@
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
-  (GET "/query/:id" req (json-response (nlp/analyze (get-in req [:params :id]) (get-in req [:params :message]))))
+  (GET "/query/:id" req
+    (let [response (nlp/analyze (get-in req [:params :id]) (get-in req [:params :message]))] 
+      (println (str "\n" response "\n"))
+      (json-response response)))
   (POST "/userEntities/:id" req
     (let [filepath (str "resources/user_entities/" (get-in req [:params :id]) "_entities.json")]
       (io/make-parents filepath)

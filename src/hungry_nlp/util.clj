@@ -1,5 +1,4 @@
 (ns hungry-nlp.util
-  (:require [clojure.java.io :as io])
   (:use [clojure.tools.trace]))
 
 (defn fcomp [& fs]
@@ -8,10 +7,6 @@
 (defn kv-pairs [kvs]
   (->> (if (map? kvs) (into [] kvs) kvs)
        (mapcat (fn [[k vs]] (map #(vector k %) vs)))))
-
-(defn make-spit [path content]
-  (do (io/make-parents path)
-      (spit path content)))
 
 (defn splice
   ([string start end] (splice string start end ""))
