@@ -15,5 +15,5 @@
 (defn repeat-s [n s]
   (apply str (repeat n s)))
 
-(defn to-map [coll default]
-  (apply merge (map #(hash-map (keyword %) default) coll)))
+(defn update-last-in [coll f]
+  (update-in coll [(dec (count coll))] f))

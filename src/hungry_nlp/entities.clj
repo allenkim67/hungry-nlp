@@ -10,30 +10,44 @@
         user-entities (s/deserialize (slurp (str "resources/user_entities/" id "_entities.json")) :json)]
     (merge shared-entities user-entities)))
 
-(defn locate-entities [entities message]
-  (-> entities
-      (t/update 
-        (*> t/all-values t/each) 
-        (fn [names] (-> (fuzzy/match message names)
-                        (t/view t/all-values)
-                        flatten
-                        (->> (vector (first names))))))
-      (t/update 
-        t/all-values 
-        (util/fcomp (partial filter (comp not-empty second))
-                    util/kv-pairs))
-      util/kv-pairs
-      (->> (map flatten)
-           (sort-by last))))
+(defn parse-entities [entities]
+  (->> entities
+       util/kv-pairs
+       (mapcat (fn [[type names]] (map #(hash-map :type (name type)
+                                                  :canonical (first names)
+                                                  :name %)
+                                       names)))
+       (sort-by (comp - count :name))
+       (sort-by :type)))
+
+(defn locate-entities [entities sentence]
+  (let [reducer (fn [result entity]
+                  (let [threshold {"number" 0.1, "food" 0.3}
+                        s (or (-> result last :positions meta :sentence) sentence)]
+                    (conj result
+                          (merge entity
+                                 (fuzzy/match s
+                                              (:name entity)
+                                              (get threshold (:type entity)))))))]
+    (->> (reduce reducer [] entities)
+         (filter (comp not-empty :positions))
+         (mapcat (fn [entity] (map #(-> (assoc entity :position %)
+                                        (dissoc :positions))
+                                   (:positions entity))))
+         (sort-by :position))))
 
 (defn group-orders
   ([entities] (group-orders entities []))
   ([entities orders]
     (if (empty? entities)
-      (if (empty? orders) {} {:orders (reverse orders)})
-      (let [order (first orders)
-            entity (first entities)]
+      (if (empty? orders)
+        {}
+        {:orders (reverse orders)})
+      (let [order (last orders)
+            entity (first entities)
+            type (keyword (:type entity))
+            name (:canonical entity)]
         (recur (rest entities)
                (if (and order (not (contains? order :food)))
-                 (update-in orders [0] #(assoc % :food (second entity)))
-                 (into [(hash-map (keyword (first entity)) (second entity))] orders)))))))
+                 (util/update-last-in orders #(assoc % type name))
+                 (conj orders (hash-map type name))))))))

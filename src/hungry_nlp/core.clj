@@ -8,6 +8,7 @@
 
 (defn analyze [id message]
   (let [entities (-> (entities/get-entities id)
+                     entities/parse-entities
                      (entities/locate-entities message)
                      entities/group-orders)
         intent (analyze-intent (if (empty? (:orders entities)) :general :order) message)]
