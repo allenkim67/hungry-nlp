@@ -10,7 +10,9 @@
 
 (defn splice
   ([string start end] (splice string start end ""))
-  ([string start end replacement] (str (subs string 0 start) replacement (subs string end))))
+  ([string start end replacement]
+   (let [flex-end (min end (count string))]
+     (str (subs string 0 start) replacement (subs string flex-end)))))
 
 (defn repeat-s [n s]
   (apply str (repeat n s)))
