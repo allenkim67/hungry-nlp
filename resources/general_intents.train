@@ -6,6 +6,8 @@ confirm	yup
 confirm	alright
 confirm	ok
 confirm	okay
+confirm	yes please
+confirm	go ahead
 showMenu	show menu
 showMenu	menu
 showMenu	what do you have
@@ -20,6 +22,7 @@ showMenu	what kind of  do you have
 showMenu	what  is available
 showMenu	i want some snacks
 showMenu	what kind of snacks do you have
+showMenu	i would like to make another order
 greet	hi
 greet	hello
 greet	hey
