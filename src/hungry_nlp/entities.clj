@@ -1,6 +1,5 @@
 (ns hungry-nlp.entities
   (:require [clojurewerkz.serialism.core :as s]
-            [traversy.lens :as t :refer [*>]]
             [hungry-nlp.fuzzy :as fuzzy]
             [hungry-nlp.util :as util])
   (:use [clojure.tools.trace]))

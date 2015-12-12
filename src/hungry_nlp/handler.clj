@@ -16,9 +16,10 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (GET "/query/:id" req
-    (let [response (nlp/analyze (get-in req [:params :id]) (get-in req [:params :message]))] 
+    (let [message (get-in req [:params :message])
+          response (nlp/analyze (get-in req [:params :id]) message)]
       (println (str "\n" response "\n"))
-      (json-response response)))
+      (json-response (assoc response :message message))))
   (POST "/userEntities/:id" req
     (let [filepath (str "resources/user_entities/" (get-in req [:params :id]) "_entities.json")]
       (io/make-parents filepath)
