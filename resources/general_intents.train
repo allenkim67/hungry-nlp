@@ -8,6 +8,7 @@ confirm	ok
 confirm	okay
 confirm	yes please
 confirm	go ahead
+confirm	confirm
 showMenu	show menu
 showMenu	menu
 showMenu	what do you have
@@ -50,6 +51,7 @@ showCurrentOrders	what are my current orders
 showCurrentOrders	show current order
 showCurrentOrders	what have I ordered so far
 showCurrentOrders	how much is that so far
+showCurrentOrders	what did i order
 clearOrder	clear my orders
 clearOrder	i want to clear my orders
 clearOrder	clear orders
