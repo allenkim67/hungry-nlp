@@ -18,7 +18,7 @@
   (GET "/query/:id" req
     (let [message (get-in req [:params :message])
           response (nlp/analyze (get-in req [:params :id]) message)]
-      (println (str "\n" response "\n"))
+      (println (str "ANALYSIS: " response "\n"))
       (json-response (assoc response :message message))))
   (POST "/userEntities/:id" req
     (let [filepath (str "resources/user_entities/" (get-in req [:params :id]) "_entities.json")]
