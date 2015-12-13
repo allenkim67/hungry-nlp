@@ -7,7 +7,8 @@
   (cl/classify type message))
 
 (defn analyze [id message]
-  (let [entities (-> (entities/get-entities id)
+  (let [message (clojure.string/lower-case message)
+        entities (-> (entities/get-entities id)
                      entities/parse-entities
                      (entities/locate-entities message)
                      entities/group-orders)
