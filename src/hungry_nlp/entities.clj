@@ -21,7 +21,7 @@
 
 (defn locate-entities [entities sentence]
   (let [reducer (fn [result entity]
-                  (let [threshold {"number" 0.1, "food" 0.3}
+                  (let [threshold {"number" 0.1, "food" 0.2}
                         s (or (-> result last :positions meta :sentence) sentence)]
                     (conj result
                           (merge entity
