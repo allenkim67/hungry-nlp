@@ -2,7 +2,7 @@
   (:import (edu.stanford.nlp.classify ColumnDataClassifier))
   (:gen-class))
 
-(def threshold 2.0)
+(def threshold 0.0)
 
 (defn classify 
   ([s] (classify :general s))
