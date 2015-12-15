@@ -33,17 +33,22 @@
                                    (:positions entity))))
          (sort-by :position))))
 
+(defn add-order-entity [entity orders]
+  (let [type (keyword (:type entity))
+        name (:canonical entity)]
+    (if (= (:type entity) "number")
+      (conj orders (hash-map type name))
+      (util/update-last-in orders #(assoc % type name)))))
+
 (defn group-entities
   ([entities] (group-entities entities []))
   ([entities groups]
    (if (empty? entities)
      groups
-     (let [entity (first entities)
-           type (keyword (:type entity))
-           name (:canonical entity)]
+     (let [entity (first entities)]
        (if (= (:type entity) "intent")
-         (recur (rest entities) (conj groups (hash-map :intent name)))
-         (recur (rest entities) (util/update-last-in groups #(assoc % type name))))))))
+         (recur (rest entities) (conj groups (hash-map :intent (:canonical entity) :entities [])))
+         (recur (rest entities) (util/update-last-in groups [:entities] (partial add-order-entity entity))))))))
 
 (defn analyze [id message]
   (let [message (clojure.string/lower-case message)] 

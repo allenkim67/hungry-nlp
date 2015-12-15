@@ -17,5 +17,7 @@
 (defn repeat-s [n s]
   (apply str (repeat n s)))
 
-(defn update-last-in [coll f]
-  (update-in coll [(dec (count coll))] f))
+(defn update-last-in
+  ([coll f] (update-last-in coll [] f))
+  ([coll ks f]
+    (update-in coll (concat [(dec (count coll))] ks) f)))
