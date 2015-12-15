@@ -4,7 +4,7 @@
   (:use [clojure.tools.trace]))
 
 ; set from 0.0 - 1.0 where 0 is strict and 1 matches anything
-(def default-threshold 0.3)
+(def default-threshold 0.2)
 
 (defn match-helper
   ([sentence word matcher] (match-helper sentence word matcher {:positions []}))
@@ -26,5 +26,5 @@
   ([sentence words] (match sentence words default-threshold))
   ([sentence words match-threshold]
    (let [matcher (diff_match_patch.)]
-     (set! (.Match_Threshold matcher) match-threshold)
+     (set! (.Match_Threshold matcher) (or match-threshold default-threshold))
      (match-helper sentence words matcher))))

@@ -8,7 +8,6 @@
                  [clojurewerkz/serialism "1.3.0"]
                  [ring/ring-json "0.4.0"]
                  [org.clojure/tools.trace "0.7.9"]
-                 [edu.stanford.nlp/stanford-corenlp "3.5.2"]
                  [traversy "0.4.0"]]
   :java-source-paths ["src/lib/java"]
   :plugins [[lein-ring "0.9.7"]]
