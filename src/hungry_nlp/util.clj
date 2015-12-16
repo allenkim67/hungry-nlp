@@ -22,3 +22,6 @@
   ([coll ks f]
    (let [last-index (if (> (dec (count coll)) -1) (dec (count coll)) 0)]
      (update-in coll (concat [last-index] ks) f))))
+
+(defn prepend [coll x]
+  (into [x] coll))

@@ -45,10 +45,11 @@
       "take out"
     ],
     [
-      "order",
+      "setOrder",
       "i want",
       "give me",
-      "may i have"
+      "may i have",
+      "can i get"
     ],
     [
       "showCurrentOrders",
@@ -98,6 +99,15 @@
       "is this working",
       "i dont understand",
       "how does this work"
+    ]
+  ],
+  "intentAugment": [
+    [
+      "increase",
+      "add",
+      "more",
+      "extra",
+      "another"
     ]
   ],
   "number": [
