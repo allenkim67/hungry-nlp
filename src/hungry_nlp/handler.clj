@@ -19,7 +19,7 @@
     (let [message (get-in req [:params :message])
           response (nlp/analyze (get-in req [:params :id]) message)]
       (println (str "ANALYSIS: " response "\n"))
-      (json-response (assoc response :message message))))
+      (json-response {:intents response :message message})))
   (POST "/userEntities/:id" req
     (let [dev-prefix (if (= (System/getenv "CLJ_ENV") "production") "" "dev_")
           filepath (str "resources/" dev-prefix "user_entities/" (get-in req [:params :id]) "_entities.json")]
