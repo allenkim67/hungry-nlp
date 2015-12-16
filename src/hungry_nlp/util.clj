@@ -20,4 +20,5 @@
 (defn update-last-in
   ([coll f] (update-last-in coll [] f))
   ([coll ks f]
-    (update-in coll (concat [(dec (count coll))] ks) f)))
+   (let [last-index (if (> (dec (count coll)) -1) (dec (count coll)) 0)]
+     (update-in coll (concat [last-index] ks) f))))
