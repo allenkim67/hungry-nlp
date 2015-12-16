@@ -23,7 +23,7 @@
   (POST "/userEntities/:id" req
     (let [id (get-in req [:params :id])
           entities-json (s/serialize (:body req) :json)]
-      (s3/write id entities-json)
+      (s3/write (str "user_entities/" id) entities-json)
       {:status 200}))
   (route/not-found "Not Found"))
 

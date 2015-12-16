@@ -7,7 +7,7 @@
 
 (defn get-entities [id]
   (let [shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
-        user-entities (s/deserialize (slurp (s3/read id)) :json)]
+        user-entities (s/deserialize (slurp (s3/read (str "user_entities/" id))) :json)]
     (merge shared-entities user-entities)))
 
 (defn parse-entities [entities]
