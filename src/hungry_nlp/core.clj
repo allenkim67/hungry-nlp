@@ -17,8 +17,7 @@
                                                   :canonical (first names)
                                                   :name %)
                                        names)))
-       (sort-by (comp - count :name))
-       (sort-by :type)))
+       (sort-by (comp - count :name))))
 
 (defn locate-entities [entities sentence]
   (let [threshold {"number" 0.1}
@@ -36,7 +35,7 @@
 
 (defn add-order [groups type name]
   (if (empty? groups)
-    (conj groups {:intent "setOrder" :orders [{type name}] })
+    (conj groups {:intent "order" :orders [{type name}] })
     (if (contains? (first groups) :orders)
       (if (contains? (get-in groups [0 :orders 0]) :food)
         (update-in groups [0 :orders] #(util/prepend % {type name}))
