@@ -1,0 +1,10 @@
+{
+  "food": [
+    ["gum"],
+    ["chicken"],
+    ["fried fish","fish"],
+    ["hamburger","burger"],
+    ["french fries","fries"],
+    ["t-bone steak", "t-bone", "steak"]
+  ]
+}

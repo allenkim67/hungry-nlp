@@ -5,8 +5,9 @@
   (:use [clojure.tools.trace]))
 
 (defn get-entities [id]
-  (let [shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
-        user-entities (s/deserialize (slurp (str "resources/user_entities/" id "_entities.json")) :json)]
+  (let [dev-prefix (if (= (System/getenv "CLJ_ENV") "production") "" "dev_")
+        shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
+        user-entities (s/deserialize (slurp (str "resources/" dev-prefix "user_entities/" id "_entities.json")) :json)]
     (merge shared-entities user-entities)))
 
 (defn parse-entities [entities]

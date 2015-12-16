@@ -21,7 +21,8 @@
       (println (str "ANALYSIS: " response "\n"))
       (json-response (assoc response :message message))))
   (POST "/userEntities/:id" req
-    (let [filepath (str "resources/user_entities/" (get-in req [:params :id]) "_entities.json")]
+    (let [dev-prefix (if (= (System/getenv "CLJ_ENV") "production") "" "dev_")
+          filepath (str "resources/" dev-prefix "user_entities/" (get-in req [:params :id]) "_entities.json")]
       (io/make-parents filepath)
       (spit filepath (s/serialize (:body req) :json))
       {:status 200}))
