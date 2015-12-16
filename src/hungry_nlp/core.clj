@@ -59,4 +59,5 @@
     (-> (get-entities id)
         parse-entities
         (locate-entities message)
-        group-entities)))
+        group-entities
+        (#(if (empty? %) [{:intent nil}] %)))))
