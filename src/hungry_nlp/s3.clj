@@ -3,8 +3,8 @@
 
 (def cred {:access-key (System/getenv "S3_ACCESS_KEY"), :secret-key (System/getenv "S3_SECRET_KEY")})
 
-(defn read [k]
+(defn download [k]
   (:content (s3/get-object cred "hungrybot" k)))
 
-(defn write [k v]
+(defn upload [k v]
   (s3/put-object cred "hungrybot" k v))
