@@ -1,13 +1,13 @@
 (ns hungry-nlp.core
   (:require [clojurewerkz.serialism.core :as s]
             [hungry-nlp.fuzzy :as fuzzy]
-            [hungry-nlp.util :as util])
+            [hungry-nlp.util :as util]
+            [hungry-nlp.s3 :as s3])
   (:use [clojure.tools.trace]))
 
 (defn get-entities [id]
-  (let [dev-prefix (if (= (System/getenv "CLJ_ENV") "production") "" "dev_")
-        shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
-        user-entities (s/deserialize (slurp (str "resources/" dev-prefix "user_entities/" id "_entities.json")) :json)]
+  (let [shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
+        user-entities (s/deserialize (slurp (s3/read id)) :json)]
     (merge shared-entities user-entities)))
 
 (defn parse-entities [entities]

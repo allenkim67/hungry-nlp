@@ -10,5 +10,4 @@ pom.xml.asc
 /.nrepl-port
 *.iml
 /.idea
-/resources/dev_user_entities
 .DS_Store

@@ -9,7 +9,8 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/tools.trace "0.7.9"]
                  [clj-time "0.11.0"],
-                 [traversy "0.4.0"]]
+                 [traversy "0.4.0"],
+                 [clj-aws-s3 "0.3.10" :exclusions [joda-time]]]
   :java-source-paths ["src/lib/java"]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler hungry-nlp.handler/app}

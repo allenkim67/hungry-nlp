@@ -5,7 +5,7 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [hungry-nlp.core :as nlp]
             [clojurewerkz.serialism.core :as s]
-            [clojure.java.io :as io])
+            [hungry-nlp.s3 :as s3])
   (:use [clojure.tools.trace]))
 
 (defn json-response [data & [status]]
@@ -21,10 +21,9 @@
       (println (str "ANALYSIS: " response "\n"))
       (json-response {:intents response :message message})))
   (POST "/userEntities/:id" req
-    (let [dev-prefix (if (= (System/getenv "CLJ_ENV") "production") "" "dev_")
-          filepath (str "resources/" dev-prefix "user_entities/" (get-in req [:params :id]) "_entities.json")]
-      (io/make-parents filepath)
-      (spit filepath (s/serialize (:body req) :json))
+    (let [id (get-in req [:params :id])
+          entities-json (s/serialize (:body req) :json)]
+      (s3/write id entities-json)
       {:status 200}))
   (route/not-found "Not Found"))
 
