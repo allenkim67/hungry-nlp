@@ -36,7 +36,7 @@
 
 (defn add-entity [groups entity]
   (let [type (keyword (:type entity))
-        name (:name entity)]
+        name (:canonical entity)]
     (if (or (empty? groups) (contains? (last groups) :food))
       (conj groups {type name})
       (util/update-last-in groups #(assoc % type name)))))
