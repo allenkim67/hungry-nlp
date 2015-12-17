@@ -57,6 +57,7 @@
         group-entities)))
 
 (defn analyze [id message]
-  (let [entities (analyze-entities id message)
-        intent (cl/classify (if (empty? entities) :general :order) message)]
+  (let [lowercase-message (clojure.string/lower-case message)
+        entities (analyze-entities id lowercase-message)
+        intent (cl/classify (if (empty? entities) :general :order) lowercase-message)]
     {:intent intent :entities entities}))
