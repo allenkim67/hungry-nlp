@@ -2,7 +2,8 @@
   (:require [clojurewerkz.serialism.core :as s]
             [hungry-nlp.fuzzy :as fuzzy]
             [hungry-nlp.util :as util]
-            [hungry-nlp.s3 :as s3])
+            [hungry-nlp.s3 :as s3]
+            [hungry-nlp.classifier :as cl])
   (:use [clojure.tools.trace]))
 
 (defn get-entities [id]
@@ -33,31 +34,29 @@
                                    (:positions entity))))
          (sort-by :position))))
 
-(defn add-order [groups type name]
-  (if (empty? groups)
-    (conj groups {:intent "order" :orders [{type name}] })
-    (if (contains? (first groups) :orders)
-      (if (contains? (get-in groups [0 :orders 0]) :food)
-        (update-in groups [0 :orders] #(util/prepend % {type name}))
-        (update-in groups [0 :orders 0] #(assoc % type name)))
-      (update-in groups [0] #(assoc % :orders [{type name}])))))
+(defn add-entity [groups entity]
+  (let [type (keyword (:type entity))
+        name (:name entity)]
+    (if (or (empty? groups) (contains? (last groups) :food))
+      (conj groups {type name})
+      (util/update-last-in groups #(assoc % type name)))))
 
 (defn group-entities
   ([entities] (group-entities entities []))
   ([entities groups]
-   (if (empty? entities)
-     (reverse groups)
-     (let [entity (first entities)
-           name (:canonical entity)
-           type (keyword (:type entity))]
-       (if (= type :intent)
-         (recur (rest entities) (util/prepend groups {:intent name}))
-         (recur (rest entities) (add-order groups type name)))))))
+   (let [entity (first entities)]
+     (if (empty? entities)
+       groups
+       (recur (rest entities) (add-entity groups entity))))))
 
-(defn analyze [id message]
+(defn analyze-entities [id message]
   (let [message (clojure.string/lower-case message)] 
     (-> (get-entities id)
         parse-entities
         (locate-entities message)
-        group-entities
-        (#(if (empty? %) [{:intent nil}] %)))))
+        group-entities)))
+
+(defn analyze [id message]
+  (let [entities (analyze-entities id message)
+        intent (cl/classify (if (empty? entities) :general :order) message)]
+    {:intent intent :entities entities}))

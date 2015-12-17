@@ -19,7 +19,7 @@
     (let [message (get-in req [:params :message])
           response (nlp/analyze (get-in req [:params :id]) message)]
       (println (str "ANALYSIS: " response "\n"))
-      (json-response {:intents response :message message})))
+      (json-response (merge response {:message message}))))
   (POST "/userEntities/:id" req
     (let [id (get-in req [:params :id])
           entities-json (s/serialize (:body req) :json)]

@@ -1,0 +1,90 @@
+confirm	yes
+confirm	yeah
+confirm	yah
+confirm	ya
+confirm	yup
+confirm	alright
+confirm	ok
+confirm	okay
+confirm	yes please
+confirm	go ahead
+confirm	confirm
+showMenu	show menu
+showMenu	menu
+showMenu	what do you have
+showMenu	whats there to order
+showMenu	what  do you guys have
+showMenu	whats there to eat
+showMenu	what are some good meals
+showMenu	what kind of grubbery do you have
+showMenu	what kind of  parcels do you have
+showMenu	what nourishments are available
+showMenu	what kind of  do you have
+showMenu	what  is available
+showMenu	i want some snacks
+showMenu	what kind of snacks do you have
+showMenu	i would like to make another order
+greet	hi
+greet	hello
+greet	hey
+greet	howdy
+greet	heya
+greet	yo
+greet	whats up
+greet	wassup
+greet	hows it going
+greet	how goes it
+greet	bonjour
+greet	buenas noches
+greet	goood day
+greet	buenos dias
+greet	good day
+greet	hi-ya
+greet	shalom
+greet	whats up
+greet	how goes it
+greet	howdy-do
+showCurrentOrders	current orders
+showCurrentOrders	show my current orders
+showCurrentOrders	show me my current orders
+showCurrentOrders	what are my current orders
+showCurrentOrders	show current order
+showCurrentOrders	what have I ordered so far
+showCurrentOrders	how much is that so far
+showCurrentOrders	what did i order
+clearOrder	clear my orders
+clearOrder	i want to clear my orders
+clearOrder	clear orders
+clearOrder	start over
+clearOrder	i want to start over
+clearOrder	let me start over
+clearOrder	can I start over
+clearOrder	i want to begin again
+clearOrder	make a fresh start
+clearOrder	start from scratch
+clearOrder	lets start from scratch
+clearOrder	i want to start from scratch
+clearOrder	i want to make a fresh start
+clearOrder	lets make a fresh start
+clearOrder	lets go back to the drawing board
+clearOrder	lets start from the beginning
+clearOrder	i want to recreate the menu
+clearOrder	lets recreate the menu
+clearOrder	i want to cancel my order
+deny	no
+deny	nope
+deny	nah
+deny	no thank you
+deny	i dont want that
+deny	no thanks
+deny	no thx
+deny	no ty
+deny	nop
+moreInfo	help
+moreInfo	what can you do
+moreInfo	what do i do now
+moreInfo	what can i do
+moreInfo	how do you work
+moreInfo	is this working
+moreInfo	i dont understand
+moreInfo	how does this work

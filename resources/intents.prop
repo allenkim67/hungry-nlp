@@ -1,0 +1,6 @@
+lowercase=true
+lowercaseNGrams=true
+useClassFeature=true
+1.useNGrams=true
+1.maxNGramLeng=4
+1.minNGramLeng=1
