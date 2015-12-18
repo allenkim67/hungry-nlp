@@ -23,8 +23,8 @@
                 (update-in matches [:positions] #(conj % match-start))))))))
 
 (defn match
-  ([sentence words] (match sentence words default-threshold))
-  ([sentence words match-threshold]
+  ([sentence word] (match sentence word default-threshold))
+  ([sentence word match-threshold]
    (let [matcher (diff_match_patch.)]
      (set! (.Match_Threshold matcher) (or match-threshold default-threshold))
-     (match-helper sentence words matcher))))
+     (match-helper sentence (clojure.string/lower-case word) matcher))))
