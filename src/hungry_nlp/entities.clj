@@ -15,35 +15,34 @@
        util/kv-pairs
        (mapcat (fn [[type names]] (map #(hash-map :type (name type)
                                                   :canonical (first names)
-                                                  :name %)
+                                                  :name (clojure.string/lower-case %))
                                        names)))
        (sort-by (comp - count :name))))
 
-(defn locate-entities [entities sentence]
-  (let [threshold {"number" 0.1}
-        reducer (fn [result entity]
-                  (let [accSentence (or (-> result last :positions meta :sentence) sentence)]
-                    (->> (fuzzy/match accSentence (:name entity) (get threshold (:type entity)))
-                         (merge entity)
-                         (conj result))))]
-    (->> (reduce reducer [] entities)
-         (filter (comp not-empty :positions))
-         (mapcat (fn [entity] (map #(-> (assoc entity :position %)
-                                        (dissoc :positions))
-                                   (:positions entity))))
-         (sort-by :position))))
+(def entity-threshold {"number" 0.1})
 
-(defn add-entity [groups entity]
-  (let [type (keyword (:type entity))
-        name (:canonical entity)]
-    (if (or (empty? groups) (contains? (last groups) :food))
-      (conj groups {type name})
-      (util/update-last-in groups #(assoc % type name)))))
+(defn locate-entities-reducer [result entity]
+  (let [threshold (get entity-threshold (:type entity))
+        match (fuzzy/match result entity threshold)]
+    (-> result
+        (assoc :_marked-sentence (:_marked-sentence match))
+        (assoc :var-sentence (:var-sentence match))
+        (update-in [:entities] #(conj % (:entity match))))))
 
-(defn group-entities
-  ([entities] (group-entities entities []))
-  ([entities groups]
-   (let [entity (first entities)]
-     (if (empty? entities)
-       groups
-       (recur (rest entities) (add-entity groups entity))))))
+(defn format-entities [entities]
+  (->> entities
+       (filter (comp not-empty :positions))
+       (mapcat (fn [entity] (map #(-> (assoc entity :position %)
+                                      (dissoc :positions))
+                                 (:positions entity))))
+       (sort-by :position)))
+
+(defn extract-entities [id sentence]
+  (let [initial {:entities         []
+                 :sentence         sentence
+                 :var-sentence     sentence
+                 :_marked-sentence sentence}
+        entities (parse-entities (get-entities id))]
+    (update-in (reduce locate-entities-reducer initial entities)
+               [:entities]
+               format-entities)))

@@ -6,25 +6,39 @@
 ; set from 0.0 - 1.0 where 0 is strict and 1 matches anything
 (def default-threshold 0.2)
 
-(defn match-helper
-  ([sentence word matcher] (match-helper sentence word matcher {:positions []}))
-  ([sentence word matcher matches]
-   (let [match-start (.match_main matcher sentence word 0)
-         word-size (count word)]
-     (if (= match-start -1)
-       (update-in matches [:positions] #(with-meta % {:sentence sentence}))
-       (let [marked-sentence (util/splice sentence
-                                          match-start
-                                          (+ match-start word-size)
-                                          (util/repeat-s word-size "|"))]
-         (recur marked-sentence
-                word
-                matcher
-                (update-in matches [:positions] #(conj % match-start))))))))
+(defn splice-marker [sentence entity match-start]
+  (let [{name :name} entity]
+    (util/splice sentence
+                 match-start
+                 (+ match-start (count name))
+                 (util/repeat-s (count name) "|"))))
+
+(defn splice-var [sentence entity match-start]
+  (let [{name :name type :type} entity]
+    (util/splice sentence
+                 match-start
+                 (+ match-start (count name))
+                 (str "{" type "}"))))
+
+(defn match-iter [sentences entity matcher]
+  (let [entity (if (:positions entity) entity (assoc entity :positions []))
+        {marked-sentence :_marked-sentence var-sentence :var-sentence} sentences
+        match-start (.match_main matcher marked-sentence (:name entity) 0)
+        var-match-start (.match_main matcher var-sentence (:name entity) 0)]
+    (if (= match-start -1)
+      {:_marked-sentence (:_marked-sentence sentences)
+       :var-sentence     (:var-sentence sentences)
+       :entity           entity}
+      (let [marked-sentence (splice-marker marked-sentence entity match-start)
+            var-sentence (splice-var var-sentence entity var-match-start)]
+        (recur {:_marked-sentence marked-sentence :var-sentence var-sentence}
+               (update-in entity [:positions] #(conj % match-start))
+               matcher)))))
 
 (defn match
-  ([sentence word] (match sentence word default-threshold))
-  ([sentence word match-threshold]
-   (let [matcher (diff_match_patch.)]
-     (set! (.Match_Threshold matcher) (or match-threshold default-threshold))
-     (match-helper sentence (clojure.string/lower-case word) matcher))))
+  ([sentences entity] (match sentences entity default-threshold))
+  ([sentences entity match-threshold]
+    (let [threshold (or match-threshold default-threshold)
+          matcher (diff_match_patch.)]
+      (set! (.-Match_Threshold matcher) threshold)
+      (match-iter sentences entity matcher))))
