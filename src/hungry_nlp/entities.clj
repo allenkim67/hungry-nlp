@@ -5,6 +5,8 @@
             [hungry-nlp.s3 :as s3])
   (:use [clojure.tools.trace]))
 
+(def entity-threshold {"number" 0.1})
+
 (defn get-entities [id]
   (let [shared-entities (s/deserialize (slurp "resources/shared_entities.json") :json)
         user-entities (s/deserialize (slurp (s3/download (str "user_entities/" id))) :json)]
@@ -19,30 +21,26 @@
                                        names)))
        (sort-by (comp - count :name))))
 
-(def entity-threshold {"number" 0.1})
-
-(defn locate-entities-reducer [result entity]
-  (let [threshold (get entity-threshold (:type entity))
-        match (fuzzy/match result entity threshold)]
-    (-> result
-        (assoc :_marked-sentence (:_marked-sentence match))
-        (assoc :var-sentence (:var-sentence match))
-        (update-in [:entities] #(conj % (:entity match))))))
-
-(defn format-entities [entities]
-  (->> entities
-       (filter (comp not-empty :positions))
-       (mapcat (fn [entity] (map #(-> (assoc entity :position %)
-                                      (dissoc :positions))
-                                 (:positions entity))))
-       (sort-by :position)))
+(defn best-fit [entities sentence]
+  entities)
 
 (defn extract-entities [id sentence]
-  (let [initial {:entities         []
-                 :sentence         sentence
-                 :var-sentence     sentence
-                 :_marked-sentence sentence}
-        entities (parse-entities (get-entities id))]
-    (update-in (reduce locate-entities-reducer initial entities)
-               [:entities]
-               format-entities)))
+  (let [entities (parse-entities (get-entities id))
+        reducer (fn [acc-matches entity]
+                  (let [name (clojure.string/lower-case (:name entity))
+                        threshold (get entity-threshold (:type entity))
+                        positions (fuzzy/find-all sentence name threshold)]
+                    (concat acc-matches (map #(assoc entity :position %) positions))))
+        matched-entities (->> (reduce reducer [] entities) (sort-by :position))]
+    (best-fit matched-entities sentence)))
+
+(defn var-sentence [entities sentence]
+  (let [reducer (fn [acc-sentence entity]
+                  (let [{name :name type :type} entity
+                        offset (- (count acc-sentence) (count sentence))
+                        position (+ (:position entity) offset)]
+                    (util/splice acc-sentence
+                                 position
+                                 (+ position (count name))
+                                 (str "<" type ">"))))]
+    (reduce reducer sentence entities)))

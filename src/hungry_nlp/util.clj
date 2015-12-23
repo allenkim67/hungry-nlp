@@ -14,9 +14,6 @@
    (let [flex-end (min end (count string))]
      (str (subs string 0 start) replacement (subs string flex-end)))))
 
-(defn repeat-s [n s]
-  (apply str (repeat n s)))
-
 (defn update-last-in
   ([coll f] (update-last-in coll [] f))
   ([coll ks f]
