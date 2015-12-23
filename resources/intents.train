@@ -1,17 +1,17 @@
-removeOrder	remove {food}
-removeOrder	i want to remove {food}
-removeOrder	take out {food}
-removeOrder	remove {number} {food}
-removeOrder	i want to remove {number} {food}
-removeOrder	take out {number} {food}
-order	{food}
-order	i want {food}
-order	give me {food}
-order	may i have {food}
-order	{number} {food}
-order	i want {number} {food}
-order	give me {number} {food}
-order	may i have {number} {food}
+removeOrder	remove <food>
+removeOrder	i want to remove <food>
+removeOrder	take out <food>
+removeOrder	remove <number> <food>
+removeOrder	i want to remove <number> <food>
+removeOrder	take out <number> <food>
+order	<food>
+order	i want <food>
+order	give me <food>
+order	may i have <food>
+order	<number> <food>
+order	i want <number> <food>
+order	give me <number> <food>
+order	may i have <number> <food>
 confirm	yes
 confirm	yeah
 confirm	yah

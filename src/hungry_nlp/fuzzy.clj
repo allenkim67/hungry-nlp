@@ -18,7 +18,7 @@
     (util/splice sentence
                  match-start
                  (+ match-start (count name))
-                 (str "{" type "}"))))
+                 (str "<" type ">"))))
 
 (defn match-iter [sentences entity matcher]
   (let [entity (if (:positions entity) entity (assoc entity :positions []))

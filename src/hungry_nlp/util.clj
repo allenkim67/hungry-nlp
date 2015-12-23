@@ -25,3 +25,17 @@
 
 (defn prepend [coll x]
   (into [x] coll))
+
+(defn re-pos [re s]
+  (loop [m (re-matcher re s)
+         res {}]
+    (if (.find m)
+      (recur m (assoc res (.start m) (.group m)))
+      res)))
+
+(defn re-spans [re s]
+  (loop [m (re-matcher re s)
+         res []]
+    (if (.find m)
+      (recur m (conj res [(.start m) (.end m)]))
+      res)))

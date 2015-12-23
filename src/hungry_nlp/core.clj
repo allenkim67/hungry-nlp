@@ -3,9 +3,9 @@
             [hungry-nlp.classifier :as cl])
   (:use [clojure.tools.trace]))
 
-(defn extract-intent [annotation]
-  (let [intent (cl/classify (:var-sentence annotation))]
-    (assoc annotation :intent intent)))
+(defn extract-intent [annotations]
+  (let [intent (cl/classify (:var-sentence annotations))]
+    (assoc annotations :intent intent)))
 
 (defn analyze [id message]
   (let [msg (clojure.string/lower-case message)]
