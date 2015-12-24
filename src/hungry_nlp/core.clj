@@ -14,3 +14,16 @@
      :var-sentence var-sentence
      :intent intent
      :relations relations}))
+
+(defn order-groups [id sentence]
+  (let [{intent :intent entities :entities relations :relations} (analyze id sentence)
+        foods (filter #(= (:type %) "food") entities)
+        orders (->> (map #(conj (relations/find-related-entities % relations)
+                                %)
+                         foods)
+                    (map #(reduce (fn [acc-order e] (assoc acc-order
+                                                           (keyword (:type e))
+                                                           (:canonical e)))
+                                  {}
+                                  %)))]
+    {:intent intent :entities orders}))

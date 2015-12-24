@@ -17,9 +17,10 @@
   (GET "/" [] "Hello World")
   (GET "/query/:id" req
     (let [message (get-in req [:params :message])
-          response (nlp/analyze (get-in req [:params :id]) message)]
-      (println (str "ANALYSIS: " response "\n"))
-      (json-response (merge response {:message message}))))
+          id (get-in req [:params :id])
+          analysis (nlp/order-groups id message)]
+      (println (str "ANALYSIS: " analysis "\n"))
+      (json-response (assoc analysis :message message))))
   (POST "/userEntities/:id" req
     (let [id (get-in req [:params :id])
           entities-json (s/serialize (:body req) :json)]
