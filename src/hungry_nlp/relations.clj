@@ -23,9 +23,10 @@
       (map (partial lookup-entity entities sentence) [i1 i3]))))
 
 (defn extract-relations [entities sentence]
-  (t/update relation-rules
-            t/all-values
-            (partial mapcat (partial match-relation entities sentence))))
+  (let [sorted-entities (sort-by :position entities)]
+    (t/update relation-rules
+              t/all-values
+              (partial mapcat (partial match-relation sorted-entities sentence)))))
 
 (defn find-related-entities [entity relations]
   (let [equals-first-or-last #(or (= (first %) entity) (= (last %) entity))
